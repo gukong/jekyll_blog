@@ -4,6 +4,8 @@ title: "const study"
 date: 2016-04-03 22:59:45 +0800
 comments: true
 categories: 分类命名规范
+excerpt: 是的，这就是摘要
+
 ---
 
 ios 全部小写
