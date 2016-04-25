@@ -38,8 +38,11 @@ end
 
 #部署到github
 desc "make new file"
-task :deploy do
-  system "rake uploadFile[#{posts_dir}]"
+task :deploy, :dot_check_image do |t, args|
+  if args.dot_check_image
+    puts "dot_check_image"
+    system "rake uploadFile[#{posts_dir}]"
+  end
   system "git add ."
   system "git commit -m \"deploy blog\""
   system "git push"
