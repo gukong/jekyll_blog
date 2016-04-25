@@ -14,7 +14,6 @@ categories:
  
 	![image](../assets/images/rake_upload_qiniu.png)
 
-
 #源代码
 你需要到七牛注册一个账号，用你的 access_key, secret_key, bucket 替换相应内容
 
