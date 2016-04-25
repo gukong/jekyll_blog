@@ -67,7 +67,7 @@ desc "scan image path contained in file"
 def scan_img_path( baseurl,file_dir, files, access_key, secret_key, qiniu_bucket)
   files.each do |one_file|
     file_content = File.read("#{file_dir}/#{one_file}")
-    matchs = file_content.scan(/^!\[image\]\(([^(http)]+[^\(^\)]*)\)/)
+    matchs = file_content.scan(/^*!\[image\]\(([^(http)]+[^\(^\)]*)\)/)
     puts matchs
     if matchs.length == 0
       save_mod_time file_dir, one_file

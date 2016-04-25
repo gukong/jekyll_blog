@@ -12,7 +12,7 @@ categories:
 2. 每次运行 `rake deploy`,会执行上传图片的任务
 3. 上传图片的流程图如下
  
-	![image](../assets/images/rake_upload_qiniu.png)
+	![image](http://7xtaiq.com1.z0.glb.clouddn.com/image/rake_upload_qiniu.png)
 
 #源代码
 你需要到七牛注册一个账号，用你的 access_key, secret_key, bucket 替换相应内容
