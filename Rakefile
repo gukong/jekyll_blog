@@ -2,8 +2,12 @@ require "stringex"
 require 'json'
 require 'qiniu'
 
-posts_dir       = "_posts"    # directory for blog files
-new_post_ext    = "markdown"  # default new post file extension when using the new_post task
+posts_dir         = "_posts"    # directory for blog files
+new_post_ext      = "markdown"  # default new post file extension when using the new_post task
+qiniu_base_url    = "http://7xtaiq.com1.z0.glb.clouddn.com/" #change to your url
+qiniu_access_key  = "wzqrJ1ftbHzYaNRFT4z5akcw2Xt0Ud-wCjCLa6B2" #change to your 七牛 access key
+qiniu_secret_key  = "TAvWSsUWzCx4Z0hkBo2RI6zqPaimSCmIYI7n2Cfu" #change to your qiniu secret key
+qiniu_bucket      = "gukong-blog-images" #change to your qiniu bucket
 
 # usage rake new_post[my-new-post] or rake new_post['my new post'] or rake new_post (defaults to "new-post")
 desc "Begin a new post in #{posts_dir}"
@@ -28,9 +32,10 @@ task :new_post, :title do |t, args|
     post.puts "categories: "
     post.puts "---"
   end
+  system "open #{filename}"
 end
 
-#提交代码到github
+#部署到github
 desc "make new file"
 task :deploy do
   system "rake uploadFile[#{posts_dir}]"
@@ -42,23 +47,24 @@ end
 #上传文件到七牛
 desc "upload image to qiniu"
 task :uploadFile, :file_dir do |t, args|
-  # File.open(args.file_dir,"r") do |file|  
-  #   while line = file.gets   #标准输入流  
-  #      puts line  
-  #   end  
-  #  end 
   file_dir = args.file_dir
+  #获取编辑过的 markdown 文件
   modfiles = get_mod_files file_dir,".markdown"
   if modfiles.length == 0
     puts "no file modified"
     next
   end
-  scan_img_path file_dir, modfiles
+  scan_img_path qiniu_base_url, file_dir, modfiles, qiniu_access_key, qiniu_secret_key, qiniu_bucket
 end
 
-#扫描文件，获取图片路径
+
+################################
+# modified markdown file  
+################################
+
+#扫描文件，获取图片路径，并上传
 desc "scan image path contained in file"
-def scan_img_path(file_dir, files)
+def scan_img_path( baseurl,file_dir, files, access_key, secret_key, qiniu_bucket)
   files.each do |one_file|
     file_content = File.read("#{file_dir}/#{one_file}")
     matchs = file_content.scan(/^!\[image\]\(([^(http)]+[^\(^\)]*)\)/)
@@ -70,38 +76,27 @@ def scan_img_path(file_dir, files)
 
     matchs.each do |image_path| 
       _path = image_path[0].to_s
-      _path = _path.sub(/(..\/)/,'')
-      code = upload_file_to_qiniu _path
+      file_path = _path.sub(/(..\/)/,'')
+      code, result = upload_file_to_qiniu file_path, access_key, secret_key, qiniu_bucket
       if code == 200
+        #获取到了url
+        #把文件里面的本地图片路径替换成url
+        key = result["key"]
+        image_url = "#{baseurl}#{key}"
+        file_content.gsub!(_path,image_url)
+
+        file = File.open("#{file_dir}/#{one_file}", "w")
+        file.puts file_content
+        file.close
+
         save_mod_time file_dir, one_file
+
+        #删除本地图片
+        system "rm #{file_path}"
       end  
     end
   end
 end
-
-#保存当前文件的修改时间
-def save_mod_time(file_dir, file)
-  mtime = File.mtime("#{file_dir}/#{file}").tv_sec
-
-  #文件修改时间的 hash 表
-  json = File.read("#{file_dir}/.mdy")
-  if json.length > 0
-    hashMap = JSON.parse(json)  
-  else
-    hashMap = Hash.new("0")  
-  end
-
-  hashMap["#{file}"] = "#{mtime}"
-
-  mdy_file = File.open("#{file_dir}/.mdy","w")
-  mdy_file.puts hashMap.to_json
-  mdy_file.close
-
-end
-
-################################
-# modified markdown file  
-################################
 
 #获取路径下的给定后缀的文件
 def get_files_with_ex(file_dir, file_extra)
@@ -160,18 +155,37 @@ def get_mod_files(file_dir, file_extra)
   return mod_file
 end
 
+#保存当前文件的修改时间
+def save_mod_time(file_dir, file)
+  mtime = File.mtime("#{file_dir}/#{file}").tv_sec
+
+  #文件修改时间的 hash 表
+  json = File.read("#{file_dir}/.mdy")
+  if json.length > 0
+    hashMap = JSON.parse(json)  
+  else
+    hashMap = Hash.new("0")  
+  end
+
+  hashMap["#{file}"] = "#{mtime}"
+
+  mdy_file = File.open("#{file_dir}/.mdy","w")
+  mdy_file.puts hashMap.to_json
+  mdy_file.close
+
+end
 
 ######################
 # 七牛上传
 #####################
 
-def upload_file_to_qiniu(file_path)
+def upload_file_to_qiniu(file_path, access_key, secret_key, qiniu_bucket)
   # 构建鉴权对象
-  Qiniu.establish_connection! :access_key => 'wzqrJ1ftbHzYaNRFT4z5akcw2Xt0Ud-wCjCLa6B2',
-                              :secret_key => 'TAvWSsUWzCx4Z0hkBo2RI6zqPaimSCmIYI7n2Cfu'
+  Qiniu.establish_connection! :access_key => access_key,
+                              :secret_key => secret_key
 
   #要上传的空间
-  bucket = 'gukong-blog-images'
+  bucket = qiniu_bucket
 
   #上传到七牛后保存的文件名
   file_name = file_path.match(/([^\/]*)(.png|.jpg)/).to_s
@@ -196,8 +210,7 @@ def upload_file_to_qiniu(file_path)
        file_path,
        key
   )
-
   #打印上传返回的信息
-  return code
+  return code, result
 end
 
