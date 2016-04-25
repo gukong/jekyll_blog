@@ -10,12 +10,14 @@ excerpt: 在Blog中访问图片资源存在路径问题，虽然路径问题是�
 
 ---
 
-##前言
+#前言
 在Blog中访问图片资源存在路径问题，虽然路径问题是可以解决的，但是仍然觉得网页里面最好不要包含本地文件路径。还有就是可以把图片资源和文章的管理分开，把图片放到七牛，可以更灵活的处理图片资源。
 
 在这之前没有接触过`ruby`这门语言，看着API文档生搬硬套，写出的代码也就是可以run的程度了，还望海涵。
 
-##逻辑
+---
+
+#逻辑
 1. 在 _posts 目录下，有一个 .mdy 文件，存储的是每个markdown文件的最近修改时间，每次运行`rake deploy`都会更新 .mdy 文件内容。
 
 2. 每次运行 `rake deploy`,会执行上传图片的任务
@@ -24,7 +26,8 @@ excerpt: 在Blog中访问图片资源存在路径问题，虽然路径问题是�
 	![image](http://7xtaiq.com1.z0.glb.clouddn.com/image/rake_upload_qiniu.png)
 
 ---
-##源代码
+
+#源代码
 你需要到七牛注册一个账号，用你的 access_key, secret_key, bucket 替换相应内容
 
 [代码在这里下载](http://7xtdgs.com2.z0.glb.clouddn.com/Rakefile)
