@@ -10,8 +10,8 @@ creator: <a href="https://github.com/gukong">@gukong</a>
 permalink: /:year/:month/:title/
 
 # Format
-highlighter: rouge
-markdown: kramdown
+highlighter: plain
+markdown: redcarpet
 redcarpet:
   extensions: ["no_intra_emphasis", "fenced_code_blocks", "autolink", "strikethrough", "superscript", "tables"]
 
@@ -48,7 +48,7 @@ paginate_path: "page/:num/"
 comment:
     #disqus: vno-jekyll
     duoshuo: gukong123
-    
+
 # Social
 social:
     #weibo: onevcat
