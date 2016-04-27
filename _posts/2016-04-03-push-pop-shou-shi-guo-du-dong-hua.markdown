@@ -20,8 +20,8 @@ categories: iOS开发|a|a
 ##流程
 #### 一、布局 UIImageView
 
-![image](http://7xtaiq.com1.z0.glb.clouddn.com/image/push_pop_1.png =300x)
-![image](http://7xtaiq.com1.z0.glb.clouddn.com/image/push_pop_2.png =300x)
+![image](http://7xtaiq.com1.z0.glb.clouddn.com/image/push_pop_1.png)
+![image](http://7xtaiq.com1.z0.glb.clouddn.com/image/push_pop_2.png)
 
 #### 二、UINavigationViewController 设置
 
