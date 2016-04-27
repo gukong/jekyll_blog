@@ -16,17 +16,18 @@ categories: 架构
 	按照书上给的列子，怎么都不觉得他应该叫【工厂方法模式】，叫【生成器模式】更贴切。
 	
 ###可以先看一看类图
-![image](../assets/images/factory_method_pattern_big.png)
+![image](http://7xtaiq.com1.z0.glb.clouddn.com/image/factory_method_pattern_big.png)
 图1
 
+
 ###简化到关键部分是这样的
-![image](../assets/images/factory_method_pattern_sm.png)
+![image](http://7xtaiq.com1.z0.glb.clouddn.com/image/factory_method_pattern_sm.png)
 图2
 
 注意：`α射线聚能器`的实质就是`α远程聚能弹生成器`
 
 ###最最关键的部分是
-![image](../assets/images/factory_method_pattern_min.png)
+![image](http://7xtaiq.com1.z0.glb.clouddn.com/image/factory_method_pattern_min.png)
 图3
 
 ----
