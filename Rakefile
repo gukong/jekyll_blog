@@ -38,9 +38,9 @@ end
 
 #部署到github
 desc "make new file"
-task :deploy, :dot_check_image do |t, args|
-  if args.dot_check_image
-    puts "dot_check_image"
+task :deploy, :dcheck_image do |t, args|
+  if args.check_image
+    puts "check_image"
     system "rake uploadFile[#{posts_dir}]"
   end
   system "git add ."
