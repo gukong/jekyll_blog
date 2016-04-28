@@ -38,7 +38,7 @@ end
 
 #部署到github
 desc "make new file"
-task :deploy, :dcheck_image do |t, args|
+task :deploy, :check_image do |t, args|
   if args.check_image
     puts "check_image"
     system "rake uploadFile[#{posts_dir}]"
